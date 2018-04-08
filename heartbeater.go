@@ -261,10 +261,17 @@ func (heartbeater *heartbeater) pingWorker(logger lager.Logger) (atc.Worker, boo
 
 	healthy := true
 
-	containers, err := heartbeater.gardenClient.Containers(nil)
-	if err != nil {
-		logger.Error("failed-to-fetch-containers", err)
-		healthy = false
+	var (
+		containers []garden.Container
+		err        error
+	)
+
+	if registration.Type != "kubernetes" {
+		containers, err = heartbeater.gardenClient.Containers(nil)
+		if err != nil {
+			logger.Error("failed-to-fetch-containers", err)
+			healthy = false
+		}
 	}
 
 	afterGarden := time.Now()
