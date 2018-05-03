@@ -105,6 +105,10 @@ func (cmd *TSACommand) Runner(args []string) (ifrit.Runner, error) {
 
 	listenAddr := fmt.Sprintf("%s:%d", cmd.BindIP, cmd.BindPort)
 
+	if cmd.SessionSigningKey.PrivateKey == nil {
+		return nil, fmt.Errorf("missing session signing key")
+	}
+
 	tokenGenerator := tsa.NewTokenGenerator(cmd.SessionSigningKey.PrivateKey)
 
 	server := &registrarSSHServer{
