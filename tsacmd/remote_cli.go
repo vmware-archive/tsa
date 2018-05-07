@@ -25,7 +25,6 @@ func (r reportContainerRequest) handles() []string {
 type forwardWorkerRequest struct {
 	gardenAddr       string
 	baggageclaimAddr string
-	reaperAddr       string
 }
 
 func (r forwardWorkerRequest) expectedForwards() int {
@@ -36,9 +35,6 @@ func (r forwardWorkerRequest) expectedForwards() int {
 	expected++
 
 	if r.baggageclaimAddr != "" {
-		expected++
-	}
-	if r.reaperAddr != "" {
 		expected++
 	}
 
