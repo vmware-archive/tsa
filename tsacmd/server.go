@@ -189,21 +189,21 @@ func (server *registrarSSHServer) handleChannel(
 		}
 
 		switch r := workerRequest.(type) {
-		case landWorkerRequest:
-			logger = logger.Session("land-worker")
-
-			req.Reply(true, nil)
-
-			logger.RegisterSink(lager.NewWriterSink(channel, lager.DEBUG))
-			err := server.landWorker(logger, channel, sessionID)
-			if err != nil {
-				logger.Error("failed-to-land-worker", err)
-				channel.SendRequest("exit-status", false, ssh.Marshal(exitStatusRequest{1}))
-				channel.Close()
-			} else {
-				channel.SendRequest("exit-status", false, ssh.Marshal(exitStatusRequest{0}))
-				channel.Close()
-			}
+		// case landWorkerRequest:
+		// 	logger = logger.Session("land-worker")
+		//
+		// 	req.Reply(true, nil)
+		//
+		// 	logger.RegisterSink(lager.NewWriterSink(channel, lager.DEBUG))
+		// 	err := server.landWorker(logger, channel, sessionID)
+		// 	if err != nil {
+		// 		logger.Error("failed-to-land-worker", err)
+		// 		channel.SendRequest("exit-status", false, ssh.Marshal(exitStatusRequest{1}))
+		// 		channel.Close()
+		// 	} else {
+		// 		channel.SendRequest("exit-status", false, ssh.Marshal(exitStatusRequest{0}))
+		// 		channel.Close()
+		// 	}
 
 		case retireWorkerRequest:
 			logger = logger.Session("retire-worker")
@@ -432,27 +432,27 @@ func (server *registrarSSHServer) continuouslyRegisterWorkerDirectly(
 	return server.heartbeatWorker(logger, worker, channel), nil
 }
 
-func (server *registrarSSHServer) landWorker(
-	logger lager.Logger,
-	channel ssh.Channel,
-	sessionID string,
-) error {
-	var worker atc.Worker
-	err := json.NewDecoder(channel).Decode(&worker)
-	if err != nil {
-		return err
-	}
-
-	err = server.validateWorkerTeam(logger, sessionID, worker)
-	if err != nil {
-		return err
-	}
-
-	return (&tsa.Lander{
-		ATCEndpoint:    server.atcEndpointPicker.Pick(),
-		TokenGenerator: server.tokenGenerator,
-	}).Land(logger, worker)
-}
+// func (server *registrarSSHServer) landWorker(
+// 	logger lager.Logger,
+// 	channel ssh.Channel,
+// 	sessionID string,
+// ) error {
+// 	var worker atc.Worker
+// 	err := json.NewDecoder(channel).Decode(&worker)
+// 	if err != nil {
+// 		return err
+// 	}
+//
+// 	err = server.validateWorkerTeam(logger, sessionID, worker)
+// 	if err != nil {
+// 		return err
+// 	}
+//
+// 	return (&tsa.Lander{
+// 		ATCEndpoint:    server.atcEndpointPicker.Pick(),
+// 		TokenGenerator: server.tokenGenerator,
+// 	}).Land(logger, worker)
+// }
 
 func (server *registrarSSHServer) retireWorker(
 	logger lager.Logger,

@@ -95,8 +95,8 @@ func (heartbeater *heartbeater) Run(signals <-chan os.Signal, ready chan<- struc
 			switch status {
 			case HeartbeatStatusGoneAway:
 				return nil
-			case HeartbeatStatusLanded:
-				return nil
+			// case HeartbeatStatusLanded:
+			// 	return nil
 			case HeartbeatStatusHealthy:
 				currentInterval = heartbeater.interval
 			default:
@@ -170,7 +170,6 @@ type HeartbeatStatus int
 
 const (
 	HeartbeatStatusUnhealthy = iota
-	HeartbeatStatusLanded
 	HeartbeatStatusGoneAway
 	HeartbeatStatusHealthy
 )
@@ -246,10 +245,10 @@ func (heartbeater *heartbeater) heartbeat(logger lager.Logger) HeartbeatStatus {
 		return HeartbeatStatusUnhealthy
 	}
 
-	if workerInfo.State == "landed" {
-		logger.Debug("worker-landed")
-		return HeartbeatStatusLanded
-	}
+	// if workerInfo.State == "landed" {
+	// 	logger.Debug("worker-landed")
+	// 	return HeartbeatStatusLanded
+	// }
 
 	return HeartbeatStatusHealthy
 }
