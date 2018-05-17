@@ -243,11 +243,6 @@ func (heartbeater *heartbeater) heartbeat(logger lager.Logger) HeartbeatStatus {
 		return HeartbeatStatusUnhealthy
 	}
 
-	// if workerInfo.State == "landed" {
-	// 	logger.Debug("worker-landed")
-	// 	return HeartbeatStatusLanded
-	// }
-
 	return HeartbeatStatusHealthy
 }
 

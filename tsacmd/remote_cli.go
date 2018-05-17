@@ -12,7 +12,6 @@ type request interface{}
 
 type registerWorkerRequest struct{}
 
-//type landWorkerRequest struct{}
 type retireWorkerRequest struct{}
 type deleteWorkerRequest struct{}
 type sweepContainerRequest struct{}

@@ -416,28 +416,6 @@ func (server *registrarSSHServer) continuouslyRegisterWorkerDirectly(
 	return server.heartbeatWorker(logger, worker, channel), nil
 }
 
-// func (server *registrarSSHServer) landWorker(
-// 	logger lager.Logger,
-// 	channel ssh.Channel,
-// 	sessionID string,
-// ) error {
-// 	var worker atc.Worker
-// 	err := json.NewDecoder(channel).Decode(&worker)
-// 	if err != nil {
-// 		return err
-// 	}
-//
-// 	err = server.validateWorkerTeam(logger, sessionID, worker)
-// 	if err != nil {
-// 		return err
-// 	}
-//
-// 	return (&tsa.Lander{
-// 		ATCEndpoint:    server.atcEndpointPicker.Pick(),
-// 		TokenGenerator: server.tokenGenerator,
-// 	}).Land(logger, worker)
-// }
-
 func (server *registrarSSHServer) retireWorker(
 	logger lager.Logger,
 	channel ssh.Channel,
