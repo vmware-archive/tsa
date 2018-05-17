@@ -189,22 +189,6 @@ func (server *registrarSSHServer) handleChannel(
 		}
 
 		switch r := workerRequest.(type) {
-		// case landWorkerRequest:
-		// 	logger = logger.Session("land-worker")
-		//
-		// 	req.Reply(true, nil)
-		//
-		// 	logger.RegisterSink(lager.NewWriterSink(channel, lager.DEBUG))
-		// 	err := server.landWorker(logger, channel, sessionID)
-		// 	if err != nil {
-		// 		logger.Error("failed-to-land-worker", err)
-		// 		channel.SendRequest("exit-status", false, ssh.Marshal(exitStatusRequest{1}))
-		// 		channel.Close()
-		// 	} else {
-		// 		channel.SendRequest("exit-status", false, ssh.Marshal(exitStatusRequest{0}))
-		// 		channel.Close()
-		// 	}
-
 		case retireWorkerRequest:
 			logger = logger.Session("retire-worker")
 

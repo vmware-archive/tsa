@@ -95,8 +95,6 @@ func (heartbeater *heartbeater) Run(signals <-chan os.Signal, ready chan<- struc
 			switch status {
 			case HeartbeatStatusGoneAway:
 				return nil
-			// case HeartbeatStatusLanded:
-			// 	return nil
 			case HeartbeatStatusHealthy:
 				currentInterval = heartbeater.interval
 			default:

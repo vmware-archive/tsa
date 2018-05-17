@@ -75,8 +75,6 @@ func parseRequest(cli string) (request, error) {
 			gardenAddr:       *garden,
 			baggageclaimAddr: *baggageclaim,
 		}, nil
-	// case "land-worker":
-	// 	return landWorkerRequest{}, nil
 	case "retire-worker":
 		return retireWorkerRequest{}, nil
 	case "delete-worker":
