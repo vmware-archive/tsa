@@ -11,7 +11,7 @@ import (
 type request interface{}
 
 type registerWorkerRequest struct{}
-
+type checkWorkerRequest struct{}
 type retireWorkerRequest struct{}
 type deleteWorkerRequest struct{}
 type sweepContainerRequest struct{}
@@ -78,6 +78,8 @@ func parseRequest(cli string) (request, error) {
 		return retireWorkerRequest{}, nil
 	case "delete-worker":
 		return deleteWorkerRequest{}, nil
+	case "check-worker":
+		return checkWorkerRequest{}, nil
 	case tsa.SweepContainers:
 		return sweepContainerRequest{}, nil
 	case tsa.ReportContainers:

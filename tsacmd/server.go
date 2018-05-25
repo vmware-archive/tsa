@@ -221,6 +221,25 @@ func (server *registrarSSHServer) handleChannel(
 				channel.Close()
 			}
 
+		case checkWorkerRequest:
+			logger = logger.Session("check-worker")
+
+			req.Reply(true, nil)
+
+			logger.RegisterSink(lager.NewWriterSink(channel, lager.DEBUG))
+
+			err := server.checkWorker(logger, channel, sessionID)
+
+			if err != nil {
+				logger.Error("failed-to-check-worker", err)
+				channel.SendRequest("exit-status", false, ssh.Marshal(exitStatusRequest{1}))
+			} else {
+				channel.SendRequest("exit-status", false, ssh.Marshal(exitStatusRequest{0}))
+				logger.Info("finished-checking-worker-presence")
+			}
+			logger.Info("closing-channel")
+			channel.Close()
+
 		case reportVolumeRequest:
 			logger = logger.Session("report-volumes-worker", lager.Data{"handles": r.handles()})
 
@@ -436,6 +455,28 @@ func (server *registrarSSHServer) retireWorker(
 		ATCEndpoint:    server.atcEndpointPicker.Pick(),
 		TokenGenerator: server.tokenGenerator,
 	}).Retire(logger, worker)
+}
+
+func (server *registrarSSHServer) checkWorker(
+	logger lager.Logger,
+	channel ssh.Channel,
+	sessionID string,
+) error {
+	var worker atc.Worker
+	err := json.NewDecoder(channel).Decode(&worker)
+	if err != nil {
+		return err
+	}
+
+	err = server.validateWorkerTeam(logger, sessionID, worker)
+	if err != nil {
+		return err
+	}
+
+	return (&tsa.CheckWorker{
+		ATCEndpoint:    server.atcEndpointPicker.Pick(),
+		TokenGenerator: server.tokenGenerator,
+	}).CheckStatus(logger, worker)
 }
 
 func (server *registrarSSHServer) deleteWorker(
