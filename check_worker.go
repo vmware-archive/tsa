@@ -14,8 +14,6 @@ import (
 	"github.com/tedsuo/rata"
 )
 
-const ()
-
 type CheckWorker struct {
 	ATCEndpoint    *rata.RequestGenerator
 	TokenGenerator TokenGenerator
@@ -55,15 +53,15 @@ func (l *CheckWorker) CheckStatus(logger lager.Logger, worker atc.Worker) error 
 		return fmt.Errorf("bad-response (%d): %s", response.StatusCode, string(b))
 	}
 	var workersList []atc.Worker
-	err = json.NewDecoder(response.Body).Decode(workersList)
+	err = json.NewDecoder(response.Body).Decode(&workersList)
 
 	if err != nil {
 		logger.Error("failed-to-read-response-body", err)
 		return fmt.Errorf("bad-repsonse-body (%d): %s", response.StatusCode, err.Error())
 	}
 
-	for _, worker := range workersList {
-		if worker.Name == worker.Name {
+	for _, w := range workersList {
+		if w.Name == worker.Name {
 			return errors.New("worker present in the list")
 		}
 	}
