@@ -189,6 +189,13 @@ func (cmd *TSACommand) configureSSHServer(sessionAuthTeam *sessionTeam, authoriz
 	}
 
 	config := &ssh.ServerConfig{
+		Config: ssh.Config{
+			MACs: []string{
+				"hmac-sha2-256-etm@openssh.com",
+				"hmac-sha2-256",
+			},
+		},
+
 		PublicKeyCallback: func(conn ssh.ConnMetadata, key ssh.PublicKey) (*ssh.Permissions, error) {
 			return certChecker.Authenticate(conn, key)
 		},
