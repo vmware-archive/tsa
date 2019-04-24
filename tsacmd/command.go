@@ -190,9 +190,23 @@ func (cmd *TSACommand) configureSSHServer(sessionAuthTeam *sessionTeam, authoriz
 
 	config := &ssh.ServerConfig{
 		Config: ssh.Config{
+			// use the defaults prefered by go, see https://github.com/golang/crypto/blob/master/ssh/common.go
+			Ciphers: nil,
+
+			// CIS recommends a certain set of MAC algorithms to be used in SSH connections. This restricts the set from a more permissive set used by default by Go.
+			// See https://infosec.mozilla.org/guidelines/openssh.html and https://www.cisecurity.org/cis-benchmarks/
 			MACs: []string{
 				"hmac-sha2-256-etm@openssh.com",
 				"hmac-sha2-256",
+			},
+
+			//[KEX Recommendations for SSH IETF](https://tools.ietf.org/html/draft-ietf-curdle-ssh-kex-sha2-10#section-4)
+			//[Mozilla Openssh Reference](https://infosec.mozilla.org/guidelines/openssh.html)
+			KeyExchanges: []string{
+				"ecdh-sha2-nistp256",
+				"ecdh-sha2-nistp384",
+				"ecdh-sha2-nistp521",
+				"curve25519-sha256@libssh.org",
 			},
 		},
 
